@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple app</title>
+    <script type="text/javascript" src="http://code.angularjs.org/angular-1.0.1.min.js"></script>
+</head>
+<body>
+
+<div ng-app = "myApp">
+    <div ng-controller = "FirstController">
+        <h1>{{person}}</h1>
+        <h2>{{person.name}}</h2>
+        <h2>{{count}}</h2>
+        <button ng-click = "Add(1)">加法</button>
+    </div>
+
+    <br>
+
+    <div ng-controller = "SecondController">
+        <input ng-model="expr" type = "text" placeholder="Enter an expression">
+        <h1>{{parsedValue}}</h1>
+
+    </div>
+
+    <br>
+
+    <div ng-controller = "ThirdController">
+        <input ng-model="to" type="email" placeholder="Recipient">
+        <textarea ng-model="emailBody"></textarea>
+        <pre>{{ previewText }}</pre>
+        <pre>{{ to }}</pre>
+    </div>
+
+    <div class = "row">
+        <div calss = "large-12 columns">
+            <label>Your name</label>
+            <input type="text" placeholder="Name" name="name" ng-model="signup.name" ng-minlength="3" ng-maxlength="20" required/>
+
+            <div class="error" ng-show="signup_form.name.$dirth && signup_form.name.$invalid">
+                <small class="error" ng-show="signup_form.name.$error.required">
+                    Your name is required.
+                </small>
+                <small class="error" ng-show="signup_form.name.$error.minlength">
+                    Your name is required to be at least 3 characters
+                </small>
+                <small class="error" ng-show="signup_form.name.$error.maxlength">
+                    Your name cannot be longer than 20 characters
+                </small>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+</body>
+<script type="text/javascript">
+    var app = angular.module('myApp',[]);
+    app.controller('FirstController',function($scope){
+        $scope.person = {name:'Ari Lerner'};
+        $scope.count = 1;
+        $scope.Add = function(count){$scope.count += count};
+    });
+
+    app.controller('SecondController',function($scope,$parse){
+        $scope.$watch('expr',function(newVal,oldVal,scope){
+            if(newVal != oldVal){
+                var parseFun = $parse(newVal);
+                $scope.parsedValue = parseFun(scope);
+            }
+        });
+
+    });
+
+    app.controller('ThirdController',function($scope,$interpolate){
+
+        $scope.$watch('emailBody',function(body){
+            if(body){
+                var template = $interpolate(body);
+                $scope.previewText = template({to:$scope.to});
+            }
+        });
+    });
+
+
+</script>
+</html>
